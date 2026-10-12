@@ -178,6 +178,8 @@ mkfs/mkfs: mkfs/mkfs.c $K/fs.h $K/param.h
 .PRECIOUS: %.o
 
 UPROGS=\
+	$U/_mkdiffdata\
+	$U/_diff\
 	$U/_cat\
 	$U/_echo\
 	$U/_forktest\

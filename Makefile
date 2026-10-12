@@ -178,6 +178,7 @@ mkfs/mkfs: mkfs/mkfs.c $K/fs.h $K/param.h
 .PRECIOUS: %.o
 
 UPROGS=\
+	$U/_tree\
 	$U/_mkdiffdata\
 	$U/_diff\
 	$U/_cat\

@@ -11,6 +11,22 @@ usage(void)
     fprintf(2, "usage: du [path] [-a] [-s]\n");
 }
 
+static void
+print_size_line(uint64 size, char *path)
+{
+    // uint64 có tối đa 20 chữ số, thêm một byte cho '\0'.
+    char buf[21];
+    char *p = buf + sizeof(buf);
+
+    *--p = '\0';
+    do {
+        *--p = '0' + size % 10;
+        size /= 10;
+    } while (size != 0);
+
+    printf("%s\t%s\n", p, path);
+}
+
 // Ghép đường dẫn cha và tên entry con
 static char *
 make_child_path(char *parent, char *name)
@@ -136,7 +152,7 @@ du_walk(char *path, int show_all, int summary,
     // Gốc sẽ được in ở main().
     if (!is_root && !summary &&
         (show_all || st.type == T_DIR)) {
-        printf("%lu\t%s\n", total, path);
+        print_size_line(total, path);
     }
 
     return 0;
@@ -181,7 +197,7 @@ main(int argc, char *argv[])
     }
 
     // Luôn in kết quả cuối cùng của path gốc
-    printf("%lu\t%s\n", total, path);
+    print_size_line(total, path);
 
     exit(0);
 }

@@ -10,13 +10,11 @@ int main(int argc, char *argv[]){
     int parent2child[2];
     int child2parent[2];
 
-    pipe(parent2child);
     if (pipe(parent2child) < 0){
         fprintf(2,"pipe error\n");
         exit(1);
     }
 
-    pipe(child2parent);
     if (pipe(child2parent) < 0){
         fprintf(2, "pipe error\n");
         exit(1);
@@ -84,7 +82,7 @@ int main(int argc, char *argv[]){
         exit(1);
     }
 
-    printf("%d: receive pong\n", getpid());
+    printf("%d: received pong\n", getpid());
     close(child2parent[0]);
     wait(0);
     exit(0);

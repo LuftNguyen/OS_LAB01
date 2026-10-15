@@ -3,8 +3,7 @@
 
 #define MAX_NUMBER 280
 
-static int
-read_int(int fd, int *value)
+static int read_int(int fd, int *value)
 {
   int total = 0;
 
@@ -29,8 +28,7 @@ read_int(int fd, int *value)
   return 1;
 }
 
-static int
-write_int(int fd, int value)
+static int write_int(int fd, int value)
 {
   int total = 0;
 
@@ -50,8 +48,20 @@ write_int(int fd, int value)
 
 static void sieve(int input_fd) __attribute__((noreturn));
 
-static void
-sieve(int input_fd)
+static int wait_child(void)
+{
+  int status;
+
+  if(wait(&status) < 0)
+    return -1;
+
+  if(status != 0)
+    return -1;
+
+  return 0;
+}
+
+static void sieve(int input_fd)
 {
   int prime;
   int number;
@@ -146,12 +156,13 @@ sieve(int input_fd)
     exit(1);
   }
 
-  wait(0);
+  if(wait_child() < 0)
+    exit(1);
+  
   exit(0);
 }
 
-int
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
   if(argc != 1){
     fprintf(2, "usage: primes\n");
@@ -192,7 +203,9 @@ main(int argc, char *argv[])
   }
 
   close(first_pipe[1]);
-  wait(0);
-
+  
+  if(wait_child() < 0)
+    exit(1);
+  
   exit(0);
 }

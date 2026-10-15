@@ -1,4 +1,5 @@
 #include "kernel/types.h"
+#include "kernel/stat.h"
 #include "kernel/fcntl.h"
 #include "user/user.h"
 
@@ -70,6 +71,33 @@ usage(void)
     fprintf(2, "usage: diff file1 file2 [-q]\n");
 }
 
+// Chỉ nhận file thường để tránh đọc dữ liệu thư mục hoặc thiết bị.
+static int
+open_regular_file(char *path)
+{
+    int fd = open(path, O_RDONLY);
+
+    if (fd < 0) {
+        fprintf(2, "diff: cannot open %s\n", path);
+        return -1;
+    }
+
+    struct stat st;
+
+    if (fstat(fd, &st) < 0) {
+        fprintf(2, "diff: cannot stat %s\n", path);
+    } else if (st.type == T_DIR) {
+        fprintf(2, "diff: %s is a directory\n", path);
+    } else if (st.type != T_FILE) {
+        fprintf(2, "diff: %s is not a regular file\n", path);
+    } else {
+        return fd;
+    }
+
+    close(fd);
+    return -1;
+}
+
 int
 main(int argc, char *argv[])
 {
@@ -99,18 +127,16 @@ main(int argc, char *argv[])
         exit(2);
     }
 
-    // PHẦN 2: Mở hai file
-    int fd1 = open(file1, O_RDONLY);
+    // PHẦN 2: Mở và kiểm tra loại đối tượng của hai file
+    int fd1 = open_regular_file(file1);
 
     if (fd1 < 0) {
-        fprintf(2, "diff: cannot open %s\n", file1);
         exit(2);
     }
 
-    int fd2 = open(file2, O_RDONLY);
+    int fd2 = open_regular_file(file2);
 
     if (fd2 < 0) {
-        fprintf(2, "diff: cannot open %s\n", file2);
         close(fd1);
         exit(2);
     }

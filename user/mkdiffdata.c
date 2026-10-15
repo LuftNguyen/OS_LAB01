@@ -109,6 +109,7 @@ main(void)
     create_file("blank_mid2", "apple\nX\nbanana\n");
     create_file("blank_end1", "apple\n");
     create_file("blank_end2", "apple\n\n");
+    create_file("blank_insert","apple\n\nbanana\ncarrot\n");
 
     exit(0);
 }

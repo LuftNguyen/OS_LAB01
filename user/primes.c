@@ -158,7 +158,7 @@ static void sieve(int input_fd)
 
   if(wait_child() < 0)
     exit(1);
-  
+
   exit(0);
 }
 
@@ -203,9 +203,9 @@ int main(int argc, char *argv[])
   }
 
   close(first_pipe[1]);
-  
+
   if(wait_child() < 0)
     exit(1);
-  
+
   exit(0);
 }

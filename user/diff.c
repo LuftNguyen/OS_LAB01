@@ -246,4 +246,3 @@ main(int argc, char *argv[])
 
     exit(different ? 1 : 0);
 }
-

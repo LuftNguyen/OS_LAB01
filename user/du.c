@@ -74,6 +74,14 @@ du_walk(char *path, int show_all, int summary,
         return -1;
     }
 
+    // File gốc cần -a hoặc -s; file con vẫn được cộng vào tổng thư mục.
+    if (is_root && st.type == T_FILE && !show_all && !summary) {
+        fprintf(2, "du: %s is a file; use -a or -s to display its size\n",
+                path);
+        close(fd);
+        return -1;
+    }
+
     uint64 total = 0;
 
     // TRƯỜNG HỢP 1: Đối tượng không phải thư mục
@@ -196,7 +204,7 @@ main(int argc, char *argv[])
         exit(1);
     }
 
-    // Luôn in kết quả cuối cùng của path gốc
+    // In kết quả của path gốc sau khi duyệt và kiểm tra thành công.
     print_size_line(total, path);
 
     exit(0);

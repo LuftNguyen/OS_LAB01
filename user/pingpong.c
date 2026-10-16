@@ -17,6 +17,8 @@ int main(int argc, char *argv[]){
 
     if (pipe(child2parent) < 0){
         fprintf(2, "pipe error\n");
+        close(parent2child[0]);
+        close(parent2child[1]);
         exit(1);
     }
 
